@@ -19,12 +19,11 @@ Start dev
 npm run dev
 ```
 
-## Roadmap
+## Repos
+- https://github.com/fraserxu/book-gpt.git
+- https://github.com/mcmcclur/ArchiveDiscourse/blob/master/ArchiveDiscourse.ipynb (refactored)
 
-- [x] Make site responsive
-- [ ] Support more format
-- [ ] Include metadata in answer
-- [ ] Have an idea? Create an issue.
+## Roadmap
 
 ## Credit:
 

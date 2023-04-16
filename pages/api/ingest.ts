@@ -20,50 +20,52 @@ const formidableConfig = {
 }
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const endBuffers: {
-    [filename: string]: Buffer
-  } = {}
 
-  const { fields, files } = await formidablePromise(req, {
-    ...formidableConfig,
-    // consume this, otherwise formidable tries to save the file to disk
-    fileWriteStreamHandler: (file) => fileConsumer(file, endBuffers),
-  })
-
-  const openaiApiKey = fields["openai-api-key"]
-  const pineconeEnvironment = fields["pinecone-environment"]
-  const pineconeIndex = fields["pinecone-index"]
-  const pineconeApiKey = fields["pinecone-api-key"]
-
-  const docs = await Promise.all(
-    Object.values(files).map(async (fileObj: formidable.file) => {
-      let fileText = ""
-      const fileData = endBuffers[fileObj.newFilename]
-      switch (fileObj.mimetype) {
-        case "text/plain":
-          fileText = fileData.toString()
-          break
-        case "application/pdf":
-          fileText = await getTextContentFromPDF(fileData)
-          break
-        case "application/octet-stream":
-          fileText = fileData.toString()
-          break
-        default:
-          throw new Error("Unsupported file type.")
-      }
-
-      const rawDocs = new Document({ pageContent: fileText })
-      const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1000,
-        chunkOverlap: 200,
-      })
-      return await textSplitter.splitDocuments([rawDocs])
-    })
-  )
-  const flatDocs = docs.flat()
 
   try {
+    const endBuffers: {
+      [filename: string]: Buffer
+    } = {}
+
+    const { fields, files } = await formidablePromise(req, {
+      ...formidableConfig,
+      // consume this, otherwise formidable tries to save the file to disk
+      fileWriteStreamHandler: (file) => fileConsumer(file, endBuffers),
+    })
+
+    const openaiApiKey = fields["openai-api-key"]
+    const pineconeEnvironment = fields["pinecone-environment"]
+    const pineconeIndex = fields["pinecone-index"]
+    const pineconeApiKey = fields["pinecone-api-key"]
+
+    const docs = await Promise.all(
+      Object.values(files).map(async (fileObj: formidable.file) => {
+        let fileText = ""
+        const fileData = endBuffers[fileObj.newFilename]
+        switch (fileObj.mimetype) {
+          case "text/plain":
+            fileText = fileData.toString()
+            break
+          case "application/pdf":
+            fileText = await getTextContentFromPDF(fileData)
+            break
+          case "application/octet-stream":
+            fileText = fileData.toString()
+            break
+          default:
+            throw new Error("Unsupported file type.")
+        }
+
+        const rawDocs = new Document({ pageContent: fileText })
+        const textSplitter = new RecursiveCharacterTextSplitter({
+          chunkSize: 1000,
+          chunkOverlap: 200,
+        })
+        return await textSplitter.splitDocuments([rawDocs])
+      })
+    )
+    const flatDocs = docs.flat()
+
     const index = await createPineconeIndex({
       pineconeApiKey: pineconeApiKey,
       pineconeIndexName: pineconeIndex,

@@ -29,7 +29,10 @@ export default function CredentailsPage() {
   const [pineconeApiKey, setPineconeApiKey] = useState(
     cookieValue.pineconeApiKey
   )
-  const [githubPersonalToken, setGithubPersonalToken] = useState(
+  const [forumURL, setForumURL] = useState(
+    cookieValue.githubPersonalToken
+  )
+  const [discordAPI, setDiscordAPI] = useState(
     cookieValue.githubPersonalToken
   )
 
@@ -45,8 +48,13 @@ export default function CredentailsPage() {
   const handlePineconeApiKeyChange = (e) => {
     setPineconeApiKey(e.target.value)
   }
-  const handleGithubPersonalTokenChange = (e) => {
-    setGithubPersonalToken(e.target.value)
+
+  const handleDiscordApiKeyChange = (e) => {
+    setDiscordAPI(e.target.value)
+  }
+
+  const handleForumURLChange = (e) => {
+    setForumURL(e.target.value)
   }
 
   const handleSaveCredentials = () => {
@@ -55,7 +63,7 @@ export default function CredentailsPage() {
       pineconeEnvironment,
       pineconeIndex,
       pineconeApiKey,
-      githubPersonalToken,
+      forumURL,
     })
   }
 
@@ -67,7 +75,7 @@ export default function CredentailsPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <section className="container flex justify-items-stretch gap-6 pt-6 pb-8 md:py-10">
+      <section className="container flex justify-items-stretch gap-6 pb-8 pt-6 md:py-10">
         <div className="flex flex-col items-start gap-2 ">
           <h2 className="mt-10 scroll-m-20 pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0">
             Add credentials
@@ -84,7 +92,7 @@ export default function CredentailsPage() {
                 <DialogTitle>Add credentials</DialogTitle>
                 <DialogDescription>
                   We will need these credentials in order to making API calls to
-                  OpenAI and Pinecone. Your credentials will be saved in browser
+                  OpenAI. Your credentials will be saved in browser
                   cookie and expire in 7 days, you data will never be stored
                   anywhere in the server.
                 </DialogDescription>
@@ -143,15 +151,29 @@ export default function CredentailsPage() {
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="github-personal-token" className="text-right">
-                    Github Personal Token
+                  <Label htmlFor="discord-ap" className="text-right">
+                    Discord API Key (coming soon)
                   </Label>
                   <Input
-                    id="github-personal-token"
-                    value={githubPersonalToken}
-                    placeholder="ghp_***************************"
+                    id="discord-api"
+                    value={discordAPI}
+                    disabled
+                    placeholder="**************"
                     className="col-span-3"
-                    onChange={handleGithubPersonalTokenChange}
+                    onChange={handleDiscordApiKeyChange}
+                  />
+                </div>
+
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="discourse-url" className="text-right">
+                    Discourse Forum URL
+                  </Label>
+                  <Input
+                    id="discourse-url"
+                    value={forumURL}
+                    placeholder="https://meta.discourse.org/"
+                    className="col-span-3"
+                    onChange={handleForumURLChange}
                   />
                 </div>
               </div>
@@ -183,7 +205,7 @@ export default function CredentailsPage() {
             </h3>
             <ol className="p-4">
               <li>
-                1. Create an API keys from{" "}
+                Create an API keys from{" "}
                 <Link
                   className="cursor-pointer text-blue-500 hover:text-blue-700 hover:underline"
                   href="https://platform.openai.com/account/api-keys"
@@ -200,7 +222,7 @@ export default function CredentailsPage() {
                   height={500}
                 />
               </li>
-              <li>
+              {/* <li>
                 2. Create an API key from{" "}
                 <Link
                   className="cursor-pointer text-blue-500 hover:text-blue-700 hover:underline"
@@ -227,27 +249,7 @@ export default function CredentailsPage() {
                   width={500}
                   height={500}
                 />
-              </li>
-              <li>
-                4. [Optional] Create a{" "}
-                <Link
-                  className="cursor-pointer text-blue-500 hover:text-blue-700 hover:underline"
-                  href="https://github.com/settings/tokens"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Github Personal Token
-                </Link>{" "}
-                to ingest markdown files from a public Github repo. You do not
-                need to select any scopes for this script.
-                <Image
-                  className="p-4"
-                  src="/screenshot/github-personal-token.png"
-                  alt="Create a new Github personal token"
-                  width={500}
-                  height={500}
-                />
-              </li>
+              </li> */}
             </ol>
           </div>
         </div>

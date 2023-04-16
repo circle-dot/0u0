@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import cookies from "js-cookie"
+import { communities } from "@/lib/constants"
 
 const credentials_cookie_key = "credentials"
 const initialCredentials = {
@@ -8,6 +9,7 @@ const initialCredentials = {
   pineconeIndex: "",
   pineconeApiKey: "",
   githubPersonalToken: "",
+  community: communities[0]
 }
 
 const CredentailsCookieContext = createContext({

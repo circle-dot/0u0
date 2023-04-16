@@ -8,7 +8,7 @@ type CreatePineconeIndexArgs = {
 
 export const createPineconeIndex = async ({
   pineconeApiKey,
-  pineconeEnvironment = "us-west1-gcp",
+  pineconeEnvironment = "northamerica-northeast1-gcp",
   pineconeIndexName,
 }: CreatePineconeIndexArgs) => {
   const pinecone = new PineconeClient()

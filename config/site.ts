@@ -11,20 +11,20 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "BookGPT",
-  description: "Upload a book, start asking question",
+  name: "GovernAI",
+  description: "Get context from your community",
   mainNav: [
     {
-      title: "Home",
+      title: "Chat",
       href: "/",
     },
     {
-      title: "Credentials",
-      href: "/credentials",
+      title: "Settings",
+      href: "/settings",
     },
   ],
   links: {
-    twitter: "https://twitter.com/fraserxu",
-    github: "https://github.com/fraserxu/book-gpt",
+    twitter: "https://twitter.com/0xPetra",
+    github: "https://github.com/0xPetra",
   },
 }
