@@ -20,7 +20,6 @@ import { useCredentialsCookie } from "@/context/credentials-context"
 export function SiteHeader() {
 
   const { cookieValue, setAndSaveCookieValue } = useCredentialsCookie()
-  console.log("🚀 ~ file: site-header.tsx:23 ~ SiteHeader ~ cookieValue:", cookieValue)
 
   const setCommunity = (community) => {
     setAndSaveCookieValue({

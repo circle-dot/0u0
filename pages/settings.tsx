@@ -111,7 +111,7 @@ export default function CredentailsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-4 items-center gap-4">
+                {/* <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="pinecone-api-key" className="text-right">
                     Pinecone API Key
                   </Label>
@@ -122,9 +122,9 @@ export default function CredentailsPage() {
                     className="col-span-3"
                     onChange={handlePineconeApiKeyChange}
                   />
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-4 items-center gap-4">
+                {/* <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="pinecone-environment" className="text-right">
                     Pinecone Environment
                   </Label>
@@ -148,7 +148,7 @@ export default function CredentailsPage() {
                     className="col-span-3"
                     onChange={handlePineconeIndexChange}
                   />
-                </div>
+                </div> */}
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="discord-ap" className="text-right">
@@ -164,7 +164,7 @@ export default function CredentailsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-4 items-center gap-4">
+                {/* <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="discourse-url" className="text-right">
                     Discourse Forum URL
                   </Label>
@@ -175,7 +175,7 @@ export default function CredentailsPage() {
                     className="col-span-3"
                     onChange={handleForumURLChange}
                   />
-                </div>
+                </div> */}
               </div>
               <DialogPrimitive.Close asChild>
                 <Button onClick={handleSaveCredentials}>Save changes</Button>

@@ -1,42 +1,81 @@
-import axios from "axios";
+import { Document } from "langchain/document"
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { createPineconeIndex } from "@/lib/pinecone"
+import { chunk, sleep } from "@/lib/utils"
+import axios from "@/lib/axiosInstance"
+
 import getTopicContent from './getTopicContent';
 import topicRow from './topicRow';
 
-const maxMoreTopics = 5;
-let cnt = 0;
-
-const processTopic = async (topicList, discourseUrl) => {
-    const contentPromises = topicList.map((topic) => getTopicContent(discourseUrl, topic));
-    const content = await Promise.all(contentPromises);
-    const contentSum = content.join("");
-
-    const rowPromises = topicList.map((topic) => topicRow(discourseUrl, topic));
-    const topicRows = await Promise.all(rowPromises);
-    const topicSUm = topicRows.join("");
-
-    return contentSum + topicSUm;
+// Make sure Vercel's serverless fc doesn't timeout
+const contentChunks = async (contents) => {
+    const rawDocs = new Document({ pageContent: contents })
+    const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 1000,
+        chunkOverlap: 200,
+    })
+    return await textSplitter.splitDocuments([rawDocs])
 }
 
-async function mainAction(discourseUrl) {
-    const topicPath = "/latest.json?no_definitions=true&page=";
-    const baseTopicUrl = discourseUrl + topicPath;
-    let url = baseTopicUrl + cnt.toString();
-    console.log("🚀 ~ file: index.ts:14 ~ mainAction ~ url:", url)
-    let topicListString = "";
-    const response = await axios.get(url);
-    const topicList = response.data.topic_list.topics;
-    const topicContent = processTopic(topicList, discourseUrl);
-    topicListString += topicContent;
-    while (response.data.topic_list.hasOwnProperty("more_topics_url") && cnt < maxMoreTopics) {
-        console.log(`cnt is ${cnt}\n============`);
-        cnt++;
-        url = baseTopicUrl + cnt.toString();
-        const newResponse = await axios.get(url);
-        const newTopicList = newResponse.data.topic_list.topics;
-        const topicContent = processTopic(newTopicList.slice(1), discourseUrl);
-        topicListString += topicContent;
+const mainAction = async (topicList, discourseUrl, credentials) => {
+    try {
+        const contentPromises = topicList.map((topic) => getTopicContent(discourseUrl, topic));
+        const content = await Promise.all(contentPromises);
+        console.log("🚀 ~ file: index.ts:15 ~ mainAction ~ content =========")
+
+        const categoryUrl = `${discourseUrl}/categories.json`;
+        const response = await axios.get(categoryUrl);
+        const categories = response.data.category_list.categories;
+        const categoryIdToName = Object.fromEntries(categories.map((cat: any) => [cat.id, cat.name]));
+
+        const rowPromises = topicList.map((topic) => topicRow(discourseUrl, topic, categoryIdToName));
+        const topicRows = await Promise.all(rowPromises);
+        const contentSum = content.join("");
+        const topicSUm = topicRows.join("");
+
+        const contents = contentSum + " - " + topicSUm;
+
+        // Await the contentChunks promise
+        const resolvedContentChunks = await contentChunks(contents);
+
+        // Use the flat() method to flatten the array
+        const flatDocs = resolvedContentChunks?.flat();
+
+        const pineconeIndex = await createPineconeIndex({
+            pineconeApiKey: process.env.PINECONE_API_KEY,
+            pineconeEnvironment: process.env.PINECONE_ENVIROMENT,
+            pineconeIndexName: credentials.pineconeIndex,
+        })
+
+        const chunkSize = 100
+        const chunks = chunk(flatDocs, chunkSize)
+
+        await Promise.all(
+            chunks.map((chunk) => {
+                try {
+                    return PineconeStore.fromDocuments(
+                        chunk,
+                        new OpenAIEmbeddings({
+                            openAIApiKey: credentials.openaiApiKey,
+                        }),
+                        {
+                            pineconeIndex,
+                        }
+                    )
+                } catch (error) {
+                    console.log("🚀 ~ file: index.ts:73 ~ chunks.map ~ error:", error)
+                    return new Error(error)
+                }
+            })
+        )
+        console.log("🚀🚀🚀🚀🚀🚀")
+        await sleep(500);
+        return;
+    } catch (error) {
+        return new Error(error)
     }
-    return topicListString;
 }
 
 export default mainAction;
