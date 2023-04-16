@@ -367,10 +367,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
-"@pinecone-database/pinecone@^0.0.10":
-  "integrity" "sha512-SwfobqOmSQvEkEtw44uc6ZZ9R/aU5bDYkBAX0cGOcSk6wWlm5yiJA+XeZkyMeUsFb1EQaGhbafIy97TDqcnnsw=="
-  "resolved" "https://registry.npmjs.org/@pinecone-database/pinecone/-/pinecone-0.0.10.tgz"
-  "version" "0.0.10"
+"@pinecone-database/pinecone@^0.0.12":
+  "integrity" "sha512-YI9IQ7/0k6jI+NUyTD+I2BvwUGhOMRgMpx/qx/v5t5Cm31vSdnXEgGfh9jILUpi/+j59vtK+O5rB+pV5v1L15w=="
+  "resolved" "https://registry.npmjs.org/@pinecone-database/pinecone/-/pinecone-0.0.12.tgz"
+  "version" "0.0.12"
   dependencies:
     "cross-fetch" "^3.1.5"
 
@@ -1836,6 +1836,11 @@
   "version" "4.0.0"
   dependencies:
     "webidl-conversions" "^7.0.0"
+
+"dotenv@^16.0.3":
+  "integrity" "sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ=="
+  "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-16.0.3.tgz"
+  "version" "16.0.3"
 
 "electron-to-chromium@^1.4.284":
   "integrity" "sha512-6c8M+ojPgDIXN2NyfGn8oHASXYnayj+gSEnGeLMKb9zjsySeVB/j7KkNAAG9yDcv8gNlhvFg5REa1N/kQU6pgA=="

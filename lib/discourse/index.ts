@@ -2,6 +2,7 @@ import { Document } from "langchain/document"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
 import { createPineconeIndex } from "@/lib/pinecone"
 import { chunk, sleep } from "@/lib/utils"
 import axios from "@/lib/axiosInstance"
@@ -71,7 +72,7 @@ const mainAction = async (topicList, discourseUrl, credentials) => {
             })
         )
         console.log("🚀🚀🚀🚀🚀🚀")
-        await sleep(500);
+        await sleep(1000);
         return;
     } catch (error) {
         return new Error(error)
