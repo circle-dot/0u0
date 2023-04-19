@@ -52,7 +52,7 @@
     "jsdom": "^21.1.1",
     "langchain": "^0.0.56",
     "lucide-react": "0.105.0-alpha.4",
-    "next": "^13.1.6",
+    "next": "^13.3.0",
     "next-themes": "^0.2.1",
     "openai": "^3.2.1",
     "pdf-parse": "^1.1.1",
@@ -61,7 +61,8 @@
     "react-dropzone": "^14.2.3",
     "sharp": "^0.31.3",
     "tailwind-merge": "^1.8.0",
-    "tailwindcss-animate": "^1.0.5"
+    "tailwindcss-animate": "^1.0.5",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.1",

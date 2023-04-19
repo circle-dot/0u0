@@ -20,7 +20,7 @@ const INITIAL_MESSAGE = {
 const DEFAULT_DISCOURSE_URL = "https://meta.discourse.org/"
 
 export default function IndexPage() {
-  const [question, setQuestion] = useState(DEFAULT_QUESTION)
+  const [question, setQuestion] = useState('')
   const [isUploading, setIsUploading] = useState(false)
   const [isAsking, setIsAsking] = useState(false)
   const [chatHistory, setChatHistory] = useState([])
@@ -135,14 +135,11 @@ export default function IndexPage() {
 
               <Button
                 // TODO: Disable when no credentials
-                // disabled={
-                //   !githubUrl ||
-                //   isUploading ||
-                //   !cookieValue.openaiApiKey ||
-                //   !cookieValue.pineconeEnvironment ||
-                //   !cookieValue.pineconeIndex ||
-                //   !cookieValue.pineconeApiKey
-                // }
+                disabled={
+                  isUploading ||
+                  !cookieValue.openaiApiKey ||
+                  !cookieValue.community
+                }
                 onClick={handleDiscourse}
                 className="mt-2"
               >
@@ -180,7 +177,7 @@ export default function IndexPage() {
                       className={cn(
                         "flex",
                         "items-end",
-                        chat.from === "bot" && "justify-end"
+                        chat.from != "bot" && "justify-end"
                       )}
                     >
                       <div
@@ -221,7 +218,7 @@ export default function IndexPage() {
                   value={question}
                   placeholder={DEFAULT_QUESTION}
                   onChange={handleQueryChange}
-                  className="mr-2 w-full rounded-md border border-gray-400 pl-2 text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                  className="mr-2 w-full rounded-md border border-gray-400 bg-white pl-2 text-gray-700 focus:border-gray-500"
                   onKeyDown={handleKeyDown}
                 />
                 <div className="items-center sm:flex">

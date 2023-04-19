@@ -2,7 +2,6 @@ import { Document } from "langchain/document"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-
 import { createPineconeIndex } from "@/lib/pinecone"
 import { chunk, sleep } from "@/lib/utils"
 import axios from "@/lib/axiosInstance"
@@ -20,9 +19,19 @@ const contentChunks = async (contents) => {
     return await textSplitter.splitDocuments([rawDocs])
 }
 
+// Throttled function to fetch topic content
+async function getThrottledTopicContent(discourseUrl, topic) {
+    await sleep(200); // Wait for 200ms before making a request
+    return getTopicContent(discourseUrl, topic);
+}
+
 const mainAction = async (topicList, discourseUrl, credentials) => {
     try {
-        const contentPromises = topicList.map((topic) => getTopicContent(discourseUrl, topic));
+        const contentPromises = [];
+
+        for (const topic of topicList) {
+            contentPromises.push(getThrottledTopicContent(discourseUrl, topic));
+        }
         const content = await Promise.all(contentPromises);
         console.log("🚀 ~ file: index.ts:15 ~ mainAction ~ content =========")
 
@@ -47,7 +56,7 @@ const mainAction = async (topicList, discourseUrl, credentials) => {
         const pineconeIndex = await createPineconeIndex({
             pineconeApiKey: process.env.PINECONE_API_KEY,
             pineconeEnvironment: process.env.PINECONE_ENVIROMENT,
-            pineconeIndexName: credentials.pineconeIndex,
+            pineconeIndexName: process.env.PINECONE_INDEX,
         })
 
         const chunkSize = 100
