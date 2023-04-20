@@ -1,16 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from "next"
 import { ChatVectorDBQAChain } from "langchain/chains"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai"
 import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { NextResponse } from 'next/server';
+import type { NextFetchEvent, NextRequest } from 'next/server';
 
+export const config = {
+  runtime: 'edge',
+};
 
 import { createPineconeIndex } from "@/lib/pinecone"
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req) {
   const { question, chatHistory, credentials } = req.body
 
   try {
@@ -45,8 +46,21 @@ export default async function handler(
       chat_history: chatHistory || [],
     })
 
-    res.status(200).json(response)
+    return response;
   } catch (e) {
-    res.status(500).json({ error: e.message || "Unknown error." })
+    console.log("🚀 ~ file: chat.ts:52 ~ handler ~ e:", e)
+    // res.status(500).json({ error: e.message || "Unknown error." })
   }
+}
+
+export default function MyEdgeFunction(
+  request: NextRequest,
+  context: NextFetchEvent,
+) {
+  console.log("🚀 ~ file: chat.ts:61 ~ context:", context)
+  // context.waitUntil(getAlbum().then((json) => console.log({ json })));
+  handler(request)
+  return NextResponse.json({
+    name: `Hello, from ${request.url} I'm an Edge Function!`,
+  });
 }

@@ -1,4 +1,5 @@
-# GovernAI
+# 0u0
+
 
 ## Development
 
@@ -13,8 +14,12 @@ npm run dev
 ```
 
 ## Roadmap
-[] reinforcement learning from human feedback (RLHF)
-[] 
+[x] Discourse integration
+[] Snapshot integration
+[] Communities directory
+[] Discord integration
+[] Github integration
+[] RLHF (reinforcement learning from human feedback)
 
 ## Credit:
 

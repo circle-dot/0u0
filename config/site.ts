@@ -11,7 +11,7 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "GovernAI",
+  name: "0u0",
   description: "Get context from your community",
   mainNav: [
     {
