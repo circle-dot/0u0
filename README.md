@@ -14,12 +14,12 @@ npm run dev
 ```
 
 ## Roadmap
-[x] Discourse integration
-[] Snapshot integration
-[] Communities directory
-[] Discord integration
-[] Github integration
-[] RLHF (reinforcement learning from human feedback)
+- [x] Discourse integration
+- [] Snapshot integration
+- [] Communities directory
+- [] Discord integration
+- [] Github integration
+- [] RLHF (reinforcement learning from human feedback)
 
 ## Credit:
 

@@ -9,17 +9,14 @@ export const config = {
   runtime: 'edge',
 };
 
-import { createPineconeIndex } from "@/lib/pinecone"
+// import { createPineconeIndex } from "@/lib/pinecone"
 
 async function handler(req) {
-  const { question, chatHistory, credentials } = req.body
+  console.log("🚀 ~ file: chat.ts:15 ~ handler ~ req:", req.cookies.credentials)
+  const { question, chatHistory, credentials } = req.cookies
 
   try {
-    const pineconeIndex = await createPineconeIndex({
-      pineconeApiKey: process.env.PINECONE_API_KEY,
-      pineconeEnvironment: process.env.PINECONE_ENVIROMENT,
-      pineconeIndexName: process.env.PINECONE_INDEX,
-    })
+    const pineconeIndex = {}
 
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({
@@ -58,8 +55,8 @@ export default function MyEdgeFunction(
   context: NextFetchEvent,
 ) {
   console.log("🚀 ~ file: chat.ts:61 ~ context:", context)
-  // context.waitUntil(getAlbum().then((json) => console.log({ json })));
-  handler(request)
+  context.waitUntil(handler(request).then((json) => console.log({ json })));
+
   return NextResponse.json({
     name: `Hello, from ${request.url} I'm an Edge Function!`,
   });

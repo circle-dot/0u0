@@ -1,10 +1,11 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import Head from "next/head"
 import Image from "next/image"
 import Link from "next/link"
 import { useCredentialsCookie } from "@/context/credentials-context"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { FileKey } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { FileKey, RefreshCw, Loader2 } from "lucide-react"
 
 import { Layout } from "@/components/layout"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+const baseUrl = 'http://0.0.0.0:8000'
+
+
 export default function CredentailsPage() {
+  const [isUploading, setIsUploading] = useState(false)
   const { cookieValue, setAndSaveCookieValue } = useCredentialsCookie()
   const [openaiApiKey, setOpenaiApiKey] = useState(cookieValue.openaiApiKey)
   const [pineconeEnvironment, setPineconeEnvironment] = useState(
@@ -35,6 +40,43 @@ export default function CredentailsPage() {
   const [discordAPI, setDiscordAPI] = useState(
     cookieValue.githubPersonalToken
   )
+
+  const { toast } = useToast()
+
+
+  const handleDiscourse = useCallback(async () => {
+    setIsUploading(true)
+    try {
+      const response = await fetch(`${baseUrl}/refresh`, {
+        body: JSON.stringify({
+          credentials: cookieValue
+        }),
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+      console.log("🚀 ~ file: index.tsx:47 ~ handleDiscourse ~ response:", response)
+      const result = await response.json()
+      if (result.error) {
+        toast({
+          title: "Something went wrong.",
+          description: result.error,
+        })
+      } else {
+        toast({
+          title: "Process success.",
+        })
+      }
+
+      setIsUploading(false)
+    } catch (e) {
+      toast({
+        title: "Something went wrong.",
+      })
+      setIsUploading(false)
+    }
+  }, [cookieValue, toast])
 
   const handleOpenaiApiKeyChange = (e) => {
     setOpenaiApiKey(e.target.value)
@@ -77,6 +119,35 @@ export default function CredentailsPage() {
       </Head>
       <section className="container flex justify-items-stretch gap-6 pb-8 pt-6 md:py-10">
         <div className="flex flex-col items-start gap-2 ">
+
+          <div className="min-w-1/5 flex flex-col items-start gap-2">
+            <div className="my-2 min-w-full py-4 sm:mb-0">
+
+              <Button
+                // TODO: Disable when no credentials
+                disabled={
+                  isUploading ||
+                  !cookieValue.openaiApiKey ||
+                  !cookieValue.community
+                }
+                onClick={handleDiscourse}
+                className="mt-2"
+              >
+                {!isUploading ? (
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                ) : (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Refresh model
+              </Button>
+            </div>
+
+            <div>
+              You can refresh the model by clicking the button above.
+              This will spend tokens from your OpenAI account.
+            </div>
+          </div>
+
           <h2 className="mt-10 scroll-m-20 pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0">
             Add credentials
           </h2>
