@@ -23,7 +23,7 @@ export default function IndexPage() {
   const [chatHistory, setChatHistory] = useState([])
   const { cookieValue } = useCredentialsCookie()
 
-  const baseUrl = 'http://0.0.0.0:8000'
+  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://0.0.0.0:8000' : 'https://ouoai.herokuapp.com'
   const { toast } = useToast()
 
   const handleQueryChange = (e) => {

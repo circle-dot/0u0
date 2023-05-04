@@ -20,8 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const baseUrl = 'http://0.0.0.0:8000'
-
+const baseUrl = process.env.NODE_ENV === 'development' ? 'http://0.0.0.0:8000' : 'https://ouoai.herokuapp.com'
 
 export default function CredentailsPage() {
   const [isUploading, setIsUploading] = useState(false)
