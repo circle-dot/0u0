@@ -4,19 +4,21 @@ import { OpenAI } from "langchain/llms/openai"
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
+import { createPineconeIndex } from "@/lib/pinecone"
 
 export const config = {
   runtime: 'edge',
 };
 
-// import { createPineconeIndex } from "@/lib/pinecone"
-
 async function handler(req) {
-  console.log("🚀 ~ file: chat.ts:15 ~ handler ~ req:", req.cookies.credentials)
   const { question, chatHistory, credentials } = req.cookies
 
   try {
-    const pineconeIndex = {}
+    const pineconeIndex = await createPineconeIndex({
+      pineconeApiKey: process.env.PINECONE_API_KEY,
+      pineconeEnvironment: process.env.PINECONE_ENVIROMENT,
+      pineconeIndexName: process.env.PINECONE_INDEX,
+    })
 
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({
@@ -26,7 +28,6 @@ async function handler(req) {
         pineconeIndex,
       }
     )
-    console.log("🚀 ~ file: chat.ts:29 ~ vectorStore:", vectorStore)
 
     const model = new OpenAI({
       modelName: "gpt-3.5-turbo",
